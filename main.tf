@@ -9,14 +9,13 @@ terraform {
 
 locals {
   github_actions_provider_hostname         = "token.actions.githubusercontent.com"
-  github_actions_identity_pool_id          = "github-actions-id-pool"
-  github_actions_identity_pool_provider_id = "github-actions-id-pool-provider"
-  github_actions_service_account_id        = "github-actions-service-account"
+  github_actions_identity_pool_id          = "${var.service_account_id}-id-pool"
+  github_actions_identity_pool_provider_id = "${var.service_account_id}-id-pool-provider"
 }
 
 // there is a service account with the specified project role
 resource "google_service_account" "service-account" {
-  account_id = local.github_actions_service_account_id
+  account_id = var.service_account_id
 }
 resource "google_project_iam_member" "service-account-project-role" {
   project = var.project_id
@@ -33,7 +32,7 @@ resource "google_service_account_iam_binding" "identity-pool-service-account-rol
   service_account_id = google_service_account.service-account.name
   role               = "roles/iam.workloadIdentityUser"
   members = [
-    "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.identity-pool.workload_identity_pool_id}/*"
+    "principalSet://iam.googleapis.com/${google_iam_workload_identity_pool.identity-pool.name}/*"
   ]
 }
 
