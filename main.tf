@@ -17,10 +17,9 @@ resource "google_service_account" "service-account" {
   account_id = var.service_account_id
 }
 resource "google_project_iam_member" "service-account-project-role" {
-  depends_on = [google_service_account.service-account]
-  project    = var.project_id
-  role       = var.project_role
-  member     = ["serviceAccount:${google_service_account.service-account.name}"]
+  project = var.project_id
+  role    = var.project_role
+  member  = ["serviceAccount:${google_service_account.service-account.email}"]
 }
 
 // there is a pool of identities allowed to assume control of that service account
