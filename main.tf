@@ -1,7 +1,6 @@
 terraform {
   required_providers {
     google-beta = {
-      source  = "hashicorp/google"
       version = ">= 3.47.0"
     }
   }
@@ -18,9 +17,10 @@ resource "google_service_account" "service-account" {
   account_id = var.service_account_id
 }
 resource "google_project_iam_member" "service-account-project-role" {
-  project = var.project_id
-  role    = var.project_role
-  member  = ["serviceAccount:${google_service_account.service-account.name}"]
+  depends_on = [google_service_account.service-account]
+  project    = var.project_id
+  role       = var.project_role
+  member     = ["serviceAccount:${google_service_account.service-account.name}"]
 }
 
 // there is a pool of identities allowed to assume control of that service account
