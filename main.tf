@@ -12,6 +12,17 @@ locals {
   github_actions_identity_pool_provider_id = "${var.service_account_id}-id-pool-provider"
 }
 
+resource "google_project_service" "required_services" {
+  for_each = [
+    "iam.googleapis.com",
+    "iamcredentials.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
+    "sts.googleapis.com"
+  ]
+  project = var.project_id
+  service = each.key
+}
+
 // there is a service account with the specified project role
 resource "google_service_account" "service-account" {
   account_id = var.service_account_id
