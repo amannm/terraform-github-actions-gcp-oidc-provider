@@ -13,12 +13,12 @@ locals {
 }
 
 resource "google_project_service" "required_services" {
-  for_each = [
+  for_each = toset([
     "iam.googleapis.com",
     "iamcredentials.googleapis.com",
     "cloudresourcemanager.googleapis.com",
     "sts.googleapis.com"
-  ]
+  ])
   project = var.project_id
   service = each.key
 }
